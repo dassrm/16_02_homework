@@ -32,3 +32,30 @@ T* unique(T* a, size_t s) {
     
     return a + write_pos;
 }
+
+template<>
+const char** unique<const char*>(const char** a, size_t s) {
+    if (s <= 1) return a + s;
+    
+    size_t write_pos = 1;
+    
+    for (size_t read_pos = 1; read_pos < s; ++read_pos) {
+        bool is_duplicate = false;
+        
+        for (size_t check_pos = 0; check_pos < write_pos; ++check_pos) {
+            if (strcmp(a[read_pos], a[check_pos]) == 0) {
+                is_duplicate = true;
+                break;
+            }
+        }
+        
+        if (!is_duplicate) {
+            if (read_pos != write_pos) {
+                a[write_pos] = a[read_pos];
+            }
+            ++write_pos;
+        }
+    }
+    
+    return a + write_pos;
+}
