@@ -1,9 +1,12 @@
+#include <type_traits>
+#include <cstring>
+
 template<class T>
 T* unique(T* a, size_t s) {
     if (s <= 1) return a + s;
     
     size_t write_pos = 1;
-    
+   
     for (size_t read_pos = 1; read_pos < s; ++read_pos) {
         bool is_duplicate = false;
         
@@ -16,7 +19,11 @@ T* unique(T* a, size_t s) {
         
         if (!is_duplicate) {
             if (read_pos != write_pos) {
-                a[write_pos] = a[read_pos];
+                if constexpr (std::is_trivially_copyable_v<T>) {
+                    std::memcpy(&a[write_pos], &a[read_pos], sizeof(T));
+                } else {
+                    a[write_pos] = a[read_pos];
+                }
             }
             ++write_pos;
         }
